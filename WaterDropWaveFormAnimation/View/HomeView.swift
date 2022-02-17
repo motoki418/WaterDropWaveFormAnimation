@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    // Waveの量を管理
     @State private var progress: CGFloat = 0.5
     @State private var startAnimation: CGFloat = 0
     var body: some View {
@@ -25,12 +26,9 @@ struct HomeView: View {
                 .foregroundColor(.gray)
                 .padding(.bottom, 30)
             
-            
             // MARK: Wave Form
             GeometryReader{ proxy in
                 let size = proxy.size
-                
-                
                 ZStack{
                     // MARK: Water Drop
                     Image(systemName: "drop.fill")
@@ -43,9 +41,10 @@ struct HomeView: View {
                         .offset(y: -1)
                     
                     // Wave Form Shape
-                    WaterWave(progress: 0.5, waveHeight: 0.1, offset: startAnimation)
+                    WaterWave(progress: progress, waveHeight: 0.05, offset: startAnimation)
                         .fill(Color("Blue"))
                     // Water Drops
+                    // Waveの中の泡を作成
                         .overlay(content: {
                             ZStack{
                                 Circle()
@@ -68,9 +67,10 @@ struct HomeView: View {
                                     .fill(.white.opacity(0.1))
                                     .frame(width: 10, height: 10)
                                     .offset(x: -40, y: 50)
-                            }
+                            }// ZStack
                         })//.overlay
                     // Masking into Drop Shape
+                    // Waveを水滴画像と同じ形にすることで、波のように見せることが出来る。
                         .mask{
                             Image(systemName: "drop.fill")
                                 .resizable()
@@ -80,7 +80,7 @@ struct HomeView: View {
                     // Add Button
                         .overlay(alignment: .bottom){
                             Button{
-                                
+                                progress += 0.01
                             }label: {
                                 Image(systemName: "plus")
                                     .font(.system(size: 40, weight: .black))
@@ -95,7 +95,6 @@ struct HomeView: View {
                 // 画像を真ん中に
                 .frame(width: size.width, height: size.height, alignment: .center)
                 .onAppear {
-                    
                     // Lopping Animation
                     withAnimation(.linear(duration: 2).repeatForever(autoreverses: false)){
                         // If you set value less than the rect width it will not finish completely
@@ -105,6 +104,10 @@ struct HomeView: View {
             }//GeometryReader
             .frame(height: 350)
             
+            // 引数にはWaveの量を管理する状態変数を$progressを指定
+            //progressの先頭に＄を付与し、参照渡しする。
+            Slider(value: $progress)
+                .padding(.top,60)
         }//VStack
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
