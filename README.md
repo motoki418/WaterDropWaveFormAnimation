@@ -1,0 +1,2 @@
+# WaterDropWaveFormAnimation
+水滴の波型エフェクトアニメーションを作成するサンプルプロジェクト
