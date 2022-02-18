@@ -27,7 +27,12 @@ struct HomeView: View {
                 .padding(.bottom, 30)
             
             // MARK: Wave Form
+            //GeometryReaderはViewのサイズを取得できる特別なView
+            // クロージャーの引数のproxyはGeometryProxyプロトコルに準拠したインスタンスです。
+            //つまり、このインスタンス(proxy)にViewのサイズや座標位置が格納されているので、proxyからViewのサイズや座標位置を取得できます。
+            //自身のView(画面サイズ)のサイズを知りたい場合は、proxy.sizeにアクセします。
             GeometryReader{ proxy in
+                //地震のView(画面サイズ)のサイズを定数sizeに格納する
                 let size = proxy.size
                 ZStack{
                     // MARK: Water Drop
@@ -36,7 +41,7 @@ struct HomeView: View {
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .foregroundColor(.white)
-                    // Streching in X Axis
+                    // in X Axis
                         .scaleEffect(x: 1.1, y: 1)
                         .offset(y: -1)
                     
@@ -81,6 +86,7 @@ struct HomeView: View {
                         .overlay(alignment: .bottom){
                             Button{
                                 progress += 0.01
+                                print(proxy.size)
                             }label: {
                                 Image(systemName: "plus")
                                     .font(.system(size: 40, weight: .black))
@@ -93,6 +99,7 @@ struct HomeView: View {
                         }//overlay
                 }// ZStack
                 // 画像を真ん中に
+                //画像の幅と高さを、自身のView(画面サイズ)のサイズが格納されている定数sizeから取得し、引数として渡す。
                 .frame(width: size.width, height: size.height, alignment: .center)
                 .onAppear {
                     // Lopping Animation
