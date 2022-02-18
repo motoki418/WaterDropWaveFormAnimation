@@ -10,7 +10,9 @@ import SwiftUI
 struct HomeView: View {
     // Waveの量を管理
     @State private var progress: CGFloat = 0.5
+    
     @State private var startAnimation: CGFloat = 0
+    
     var body: some View {
         VStack{
             Image("Pic")
@@ -34,70 +36,82 @@ struct HomeView: View {
             GeometryReader{ proxy in
                 //地震のView(画面サイズ)のサイズを定数sizeに格納する
                 let size = proxy.size
-                ZStack{
-                    // MARK: Water Drop
-                    Image(systemName: "drop.fill")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(.white)
-                    // in X Axis
-                        .scaleEffect(x: 1.1, y: 1)
-                        .offset(y: -1)
-                    
-                    // Wave Form Shape
-                    WaterWave(progress: progress, waveHeight: 0.05, offset: startAnimation)
-                        .fill(Color("Blue"))
-                    // Water Drops
-                    // Waveの中の泡を作成
-                        .overlay(content: {
-                            ZStack{
-                                Circle()
-                                    .fill(.white.opacity(0.1))
-                                    .frame(width: 15, height: 15)
-                                    .offset(x: -20)
-                                Circle()
-                                    .fill(.white.opacity(0.1))
-                                    .frame(width: 15, height: 15)
-                                    .offset(x: 40, y: 30)
-                                Circle()
-                                    .fill(.white.opacity(0.1))
-                                    .frame(width: 25, height: 25)
-                                    .offset(x: -30, y: 80)
-                                Circle()
-                                    .fill(.white.opacity(0.1))
-                                    .frame(width: 10, height: 10)
-                                    .offset(x: 40, y: 100)
-                                Circle()
-                                    .fill(.white.opacity(0.1))
-                                    .frame(width: 10, height: 10)
-                                    .offset(x: -40, y: 50)
-                            }// ZStack
-                        })//.overlay
-                    // Masking into Drop Shape
-                    // Waveを水滴画像と同じ形にすることで、波のように見せることが出来る。
-                        .mask{
-                            Image(systemName: "drop.fill")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .padding(20)
-                        }//.mask
-                    // Add Button
-                        .overlay(alignment: .bottom){
-                            Button{
-                                progress += 0.01
-                                print(proxy.size)
-                            }label: {
-                                Image(systemName: "plus")
-                                    .font(.system(size: 40, weight: .black))
-                                    .foregroundColor(Color("Blue"))
-                                    .shadow(radius: 2)
-                                    .padding(25)
-                                    .background(.white,in: Circle())
-                            }
-                            .offset(y: 40)
-                        }//overlay
-                }// ZStack
+                VStack{
+                    // xとyはoriginのｘ座標、ｙ座標の値を表す
+                    //origin座標とは左上から始まるViewの表示座標のこと
+                    Text("x: \(proxy.frame(in: .global).origin.x)Y:\(proxy.frame(in: .global).origin.y)")
+                    //widthとheightは水滴画像の幅と高さを表している
+                    Text("width:\(size.width)height:\(size.height)")
+                    ZStack{
+                        // MARK: Water Drop
+                        Image(systemName: "drop.fill")
+                            .resizable()
+                            .renderingMode(.template)
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundColor(.white)
+                        // in X Axis
+                            .scaleEffect(x: 1.1, y: 1)
+                            .offset(y: -1)
+                        
+                        // Wave Form Shape
+                        WaterWave(progress: progress, waveHeight: 0.05, offset: startAnimation)
+                            .fill(Color("Blue"))
+                        // Water Drops
+                        // Waveの中の泡を作成
+                            .overlay(content: {
+                                ZStack{
+                                    Circle()
+                                        .fill(.white.opacity(0.1))
+                                        .frame(width: 15, height: 15)
+                                        .offset(x: -20)
+                                    Circle()
+                                        .fill(.white.opacity(0.1))
+                                        .frame(width: 15, height: 15)
+                                        .offset(x: 40, y: 30)
+                                    Circle()
+                                        .fill(.white.opacity(0.1))
+                                        .frame(width: 25, height: 25)
+                                        .offset(x: -30, y: 80)
+                                    Circle()
+                                        .fill(.white.opacity(0.1))
+                                        .frame(width: 10, height: 10)
+                                        .offset(x: 40, y: 100)
+                                    Circle()
+                                        .fill(.white.opacity(0.1))
+                                        .frame(width: 10, height: 10)
+                                        .offset(x: -40, y: 50)
+                                }// ZStack
+                            })//.overlay
+                        // Masking into Drop Shape
+                        // Waveを水滴画像と同じ形にすることで、波のように見せることが出来る。
+                            .mask{
+                                Image(systemName: "drop.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(20)
+                            }//.mask
+                        // Add Button
+                        //.overlayはViewを重ねることが出来る
+                        //最初の引数に重ねたいViewを指定します。
+                        //重ねるViewのサイズは、デフォルトで元となるViewの表示サイズと同じになります。
+                        //alignment引数で配置方法を指定可能です。指定可能な値は、.background()と同様です。
+                        //今回は画像の上にボタンを重ねる
+                            .overlay(alignment: .bottom){
+                                Button{
+                                    progress += 0.01
+                                    print(proxy.size)
+                                }label: {
+                                    Image(systemName: "plus")
+                                        .font(.system(size: 40, weight: .black))
+                                        .foregroundColor(Color("Blue"))
+                                        .shadow(radius: 2)
+                                        .padding(25)
+                                        .background(.white,in: Circle())
+                                }
+                                .offset(y: 40)
+                            }//overlay
+                    }// ZStack
+                }// VStacl
                 // 画像を真ん中に
                 //画像の幅と高さを、自身のView(画面サイズ)のサイズが格納されている定数sizeから取得し、引数として渡す。
                 .frame(width: size.width, height: size.height, alignment: .center)
@@ -110,7 +124,6 @@ struct HomeView: View {
                 }// onAppear
             }//GeometryReader
             .frame(height: 350)
-            
             // 引数にはWaveの量を管理する状態変数を$progressを指定
             //progressの先頭に＄を付与し、参照渡しする。
             Slider(value: $progress)
@@ -128,6 +141,7 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
+//Waveの形を作る構造体
 struct WaterWave: Shape{
     
     var progress: CGFloat
