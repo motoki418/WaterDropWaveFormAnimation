@@ -141,7 +141,9 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-//Waveの形を作る構造体
+// Waveの形を作る構造体
+// カスタムシェイプを作成する
+// カスタムシェイプは、Shapeプロトコルを実装した構造体を作成し、pathというメソッドを実装します。
 struct WaterWave: Shape{
     
     var progress: CGFloat
@@ -150,7 +152,8 @@ struct WaterWave: Shape{
     //Initial Animation Start
     var offset: CGFloat
     
-    //Enabling Animation
+    // Enabling Animation
+    // アニメーションを伴って変化させたい値を、getter / setter で定義する
     var animatableData: CGFloat{
         get{offset}
         set{offset = newValue}
